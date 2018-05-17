@@ -1,4 +1,4 @@
-import { FaceAPI, FaceAPIImpl, Identity, Convert, Face } from "../src/index";
+import { FaceAPI, FaceAPIImpl, Identity, Convert, Face, InMemoryCache, DetectedPerson } from "../src/index";
 import * as fs from "fs";
 
 let subscriptionKey = process.env.SUBSCRIPTION_KEY;
@@ -89,4 +89,17 @@ describe('check face-api-impl', () => {
         });
     });
 
+    it('should detect persons using cache', () => {
+        let impl: FaceAPI = getInstance();
+        let cache = new InMemoryCache<DetectedPerson>();
+        return readAsPromise(identifyImg).then(buf => {
+            return impl.detectPersons(buf, personGroupId, cache).then(persons => {
+                expect(persons).not.toBeNull();
+                expect(persons.length).toBe(5);
+                persons.forEach(person => {
+                    expect(cache.has(person.personId)).toBeTruthy();
+                });
+            })
+        });
+    });
 });

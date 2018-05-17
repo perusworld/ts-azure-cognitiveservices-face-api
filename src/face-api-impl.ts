@@ -1,5 +1,18 @@
-import { FaceAPI, Face, Identity, Person, DetectedPerson, Convert } from './face-api';
+import { FaceAPI, Face, Identity, Person, DetectedPerson, Convert, DataCache } from './face-api';
 import { RequestWrapper } from './request';
+
+export class InMemoryCache<T> implements DataCache<T> {
+    cache: any = {};
+    public get(key: string): T {
+        return this.cache[key];
+    }
+    public has(key: string): boolean {
+        return null != this.cache[key];
+    }
+    set(key: string, value: T): void {
+        this.cache[key] = value;
+    }
+}
 
 export class FaceAPIImpl implements FaceAPI {
     conf: any;
@@ -53,7 +66,7 @@ export class FaceAPIImpl implements FaceAPI {
         });
     }
 
-    public detectPersons(buffer: Buffer, personGroupId: string): Promise<DetectedPerson[]> {
+    public detectPersons(buffer: Buffer, personGroupId: string, cache: DataCache<DetectedPerson>): Promise<DetectedPerson[]> {
         return this.detect(buffer).then(faces => {
             if (null == faces || 0 == faces.length) {
                 return [];
@@ -65,8 +78,9 @@ export class FaceAPIImpl implements FaceAPI {
                     let promises: any[] = [];
                     ids.forEach(id => {
                         if (null != id.candidates && 0 < id.candidates.length) {
-                            ret.push({ personId: id.candidates[0].personId, emotion: Convert.emotion(faces.find(face => face.faceId == id.faceId)) })
-                            promises.push(this.person(personGroupId, id.candidates[0].personId));
+                            const personId = id.candidates[0].personId;
+                            ret.push({ personId: personId, emotion: Convert.emotion(faces.find(face => face.faceId == id.faceId)) })
+                            promises.push(cache && cache.has(personId) ? cache.get(personId) : this.person(personGroupId, personId));
                         }
                     });
                     return Promise.all(promises).then(values => {
@@ -74,6 +88,9 @@ export class FaceAPIImpl implements FaceAPI {
                             let entry = ret.find(entry => entry.personId == person.personId);
                             if (entry) {
                                 entry.name = person.name;
+                                if (null != cache) {
+                                    cache.set(entry.personId, person);
+                                }
                             }
                         });
                         return ret;

@@ -164,9 +164,15 @@ export namespace Convert {
     }
 }
 
+export interface DataCache<T> {
+    get(key: string): T;
+    has(key: string): boolean;
+    set(key: string, value: T): void;
+}
+
 export interface FaceAPI {
     detect(buffer: Buffer): Promise<Face[]>;
     identify(personGroupId: string, faceIds: string[]): Promise<Identity[]>;
     person(personGroupId: string, personId: string): Promise<Person>;
-    detectPersons(buffer: Buffer,personGroupId: string): Promise<DetectedPerson[]>;
+    detectPersons(buffer: Buffer, personGroupId: string, cache?: DataCache<DetectedPerson>): Promise<DetectedPerson[]>;
 }
