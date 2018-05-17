@@ -1,4 +1,4 @@
-import { FaceAPI, Face, Identity, Convert } from './face-api';
+import { FaceAPI, Face, Identity, Person, Convert } from './face-api';
 import { RequestWrapper } from './request';
 
 export class FaceAPIImpl implements FaceAPI {
@@ -38,6 +38,16 @@ export class FaceAPIImpl implements FaceAPI {
                 faceIds: faceIds,
                 maxNumOfCandidatesReturned: 1
             }
+        }).then(resp => {
+            return resp;
+        });
+    }
+
+    public person(personGroupId: string, personId: string): Promise<Person> {
+        return this.requestWrapper.send({
+            endpoint: `persongroups/${personGroupId}/persons/${personId}`,
+            method: "GET",
+            payload: {}
         }).then(resp => {
             return resp;
         });

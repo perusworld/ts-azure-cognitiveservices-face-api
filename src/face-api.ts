@@ -109,6 +109,13 @@ export interface Candidate {
     confidence?: number;
 }
 
+export interface Person {
+    personId?:         string;
+    persistedFaceIds?: string[];
+    name?:             string;
+    userData?:         string;
+}
+
 export namespace Convert {
     export function toFace(json: string): Face[] {
         return JSON.parse(json);
@@ -123,6 +130,14 @@ export namespace Convert {
     }
 
     export function identityToJson(value: Identity[]): string {
+        return JSON.stringify(value, null, 2);
+    }
+
+    export function toPerson(json: string): Person {
+        return JSON.parse(json);
+    }
+
+    export function personToJson(value: Person): string {
         return JSON.stringify(value, null, 2);
     }
 
