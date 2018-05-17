@@ -1,6 +1,6 @@
 # Azure Cognitive Services Face API - Node.js TypeScript Module - Base #
 
-## install
+## Install
 ```bash
 npm install github:perusworld/ts-azure-cognitiveservices-face-api --save
 ```
