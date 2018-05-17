@@ -1,2 +1,2 @@
-export * from './base';
-export * from './impl';
+export * from './face-api';
+export * from './face-api-impl';

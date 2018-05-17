@@ -1,7 +1,7 @@
 {
-  "name": "node-ts-base",
-  "version": "1.0.1",
-  "description": "Node.js TypeScript Module - Base",
+  "name": "ts-azure-cognitiveservices-face-api",
+  "version": "1.0.0",
+  "description": "Node.js TypeScript Module - Azure Cognitive Services Face API",
   "main": "dist/index",
   "types": "dist/index",
   "scripts": {
@@ -24,24 +24,31 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/perusworld/node-ts-base.git"
+    "url": "git://github.com/perusworld/ts-azure-cognitiveservices-face-api.git"
   },
   "keywords": [
     "nodejs",
     "typescript",
-    "module"
+    "module",
+    "azure",
+    "cognitiveservices",
+    "fae-api"
   ],
   "author": "Saravana Perumal Shanmugam <saravanaperumal@msn.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/perusworld/node-ts-base/issues"
+    "url": "https://github.com/perusworld/ts-azure-cognitiveservices-face-api/issues"
   },
-  "homepage": "https://github.com/perusworld/node-ts-base",
+  "homepage": "https://github.com/perusworld/ts-azure-cognitiveservices-face-api",
   "devDependencies": {
     "@types/jest": "^22.2.3",
     "@types/node": "^10.1.0",
+    "@types/request": "^2.47.0",
     "jest": "^22.4.3",
     "ts-jest": "^22.4.6",
     "typescript": "^2.8.3"
+  },
+  "dependencies": {
+    "request": "^2.86.0"
   }
 }
