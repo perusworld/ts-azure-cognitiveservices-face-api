@@ -1,4 +1,4 @@
-import { FaceAPIImpl, Convert } from "../src/index";
+import { FaceAPIImpl, Identity, Convert } from "../src/index";
 import * as fs from "fs";
 
 let subscriptionKey = process.env.SUBSCRIPTION_KEY;
@@ -51,6 +51,30 @@ describe('check face-api-impl', () => {
                 return impl.identify(personGroupId, faceIds).then(ids => {
                     expect(ids).not.toBeNull();
                     expect(ids.length).toBe(faces.length);
+                });
+            })
+        });
+    });
+
+    it('should get person', () => {
+        let impl = new FaceAPIImpl({
+            location: location,
+            subscriptionKey: subscriptionKey
+        });
+        return readAsPromise(identifyImg).then(buf => {
+            return impl.detect(buf).then(faces => {
+                expect(faces).not.toBeNull();
+                expect(faces.length).toBe(6);
+                expect(faces[0].faceAttributes.gender).toBe("male");
+                let faceIds =  faces.map(face => face.faceId);
+                return impl.identify(personGroupId, faceIds).then(ids => {
+                    expect(ids).not.toBeNull();
+                    expect(ids.length).toBe(faces.length);
+                    let id = ids.find(id => 0 < id.candidates.length);
+                    return impl.person(personGroupId, id.candidates[0].personId).then(person => {
+                        expect(person).not.toBeNull();
+                        console.log(person);
+                    });
                 });
             })
         });
