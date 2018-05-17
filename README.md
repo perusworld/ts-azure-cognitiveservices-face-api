@@ -9,7 +9,7 @@ npm install github:perusworld/ts-azure-cognitiveservices-face-api --save
 
 ## Detect
 ```javascript
-import { FaceAPIImpl, Convert } from "ts-azure-cognitiveservices-face-api";
+import { FaceAPIImpl } from "ts-azure-cognitiveservices-face-api";
 let faceAPI = new FaceAPIImpl({
     location: location,
     subscriptionKey: subscriptionKey
@@ -22,12 +22,24 @@ faceAPI.detect(buf).then(faces => {
 
 ## Identify
 ```javascript
-import { FaceAPIImpl, Convert } from "ts-azure-cognitiveservices-face-api";
+import { FaceAPIImpl } from "ts-azure-cognitiveservices-face-api";
 let faceAPI = new FaceAPIImpl({
     location: location,
     subscriptionKey: subscriptionKey
 });
 faceAPI.identify(personGroupId, faceIds).then(ids => {
     //ids array
+});
+```
+
+## Get Person
+```javascript
+import { FaceAPIImpl } from "ts-azure-cognitiveservices-face-api";
+let faceAPI = new FaceAPIImpl({
+    location: location,
+    subscriptionKey: subscriptionKey
+});
+faceAPI.person(personGroupId, personId).then(person => {
+    //person
 });
 ```
