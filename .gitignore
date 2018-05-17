@@ -2,3 +2,4 @@ dist/
 node_modules/
 .vs/
 test/test.jpg
+test/combo.jpg

@@ -1,4 +1,4 @@
-import { FaceAPI, Face, Convert } from './face-api';
+import { FaceAPI, Face, Identity, Convert } from './face-api';
 import { RequestWrapper } from './request';
 
 export class FaceAPIImpl implements FaceAPI {
@@ -15,6 +15,7 @@ export class FaceAPIImpl implements FaceAPI {
             ...conf
         };
         this.conf.detectEndpoint = "detect?returnFaceId=true&returnFaceLandmarks=false&returnFaceAttributes=age,gender,headPose,smile,facialHair,glasses,emotion,hair,makeup,occlusion,accessories,blur,exposure,noise";
+        this.conf.identifyEndpoint = "identify";
         this.requestWrapper = new RequestWrapper(conf);
     }
 
@@ -23,6 +24,20 @@ export class FaceAPIImpl implements FaceAPI {
             endpoint: this.conf.detectEndpoint,
             method: "POST",
             payload: buffer
+        }).then(resp => {
+            return resp;
+        });
+    }
+
+    public identify(personGroupId: string, faceIds: string[]): Promise<Identity[]> {
+        return this.requestWrapper.send({
+            endpoint: this.conf.identifyEndpoint,
+            method: "POST",
+            payload: {
+                personGroupId: personGroupId,
+                faceIds: faceIds,
+                maxNumOfCandidatesReturned: 1
+            }
         }).then(resp => {
             return resp;
         });

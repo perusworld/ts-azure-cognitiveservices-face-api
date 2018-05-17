@@ -99,12 +99,30 @@ export interface FaceRectangle {
     top?: number;
 }
 
+export interface Identity {
+    faceId?:     string;
+    candidates?: Candidate[];
+}
+
+export interface Candidate {
+    personId?:   string;
+    confidence?: number;
+}
+
 export namespace Convert {
     export function toFace(json: string): Face[] {
         return JSON.parse(json);
     }
 
     export function faceToJson(value: Face[]): string {
+        return JSON.stringify(value, null, 2);
+    }
+
+    export function toIdentity(json: string): Identity[] {
+        return JSON.parse(json);
+    }
+
+    export function identityToJson(value: Identity[]): string {
         return JSON.stringify(value, null, 2);
     }
 
