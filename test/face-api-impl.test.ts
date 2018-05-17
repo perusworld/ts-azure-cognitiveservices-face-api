@@ -1,4 +1,4 @@
-import { FaceAPIImpl, Identity, Convert } from "../src/index";
+import { FaceAPI, FaceAPIImpl, Identity, Convert, Face } from "../src/index";
 import * as fs from "fs";
 
 let subscriptionKey = process.env.SUBSCRIPTION_KEY;
@@ -7,7 +7,7 @@ let personGroupId = process.env.PERSON_GROUP_ID || "testpersongroupid";
 let detectImg = process.env.DETECT_TEST_IMAGE || "test/test.jpg";
 let identifyImg = process.env.IDENTIFY_TEST_IMAGE || "test/combo.jpg";
 
-function readAsPromise(file: string) : Promise<any> {
+function readAsPromise(file: string): Promise<any> {
     return new Promise((resolve, reject) => {
         fs.readFile(file, (err, buf) => {
             if (err) {
@@ -19,13 +19,17 @@ function readAsPromise(file: string) : Promise<any> {
     });
 }
 
+function getInstance(): FaceAPI {
+    return new FaceAPIImpl({
+        location: location,
+        subscriptionKey: subscriptionKey
+    });
+}
+
 describe('check face-api-impl', () => {
 
     it('should detect', () => {
-        let impl = new FaceAPIImpl({
-            location: location,
-            subscriptionKey: subscriptionKey
-        });
+        let impl: FaceAPI = getInstance();
         return readAsPromise(detectImg).then(buf => {
             return impl.detect(buf).then(faces => {
                 expect(faces).not.toBeNull();
@@ -38,16 +42,13 @@ describe('check face-api-impl', () => {
     });
 
     it('should identify', () => {
-        let impl = new FaceAPIImpl({
-            location: location,
-            subscriptionKey: subscriptionKey
-        });
+        let impl: FaceAPI = getInstance();
         return readAsPromise(identifyImg).then(buf => {
             return impl.detect(buf).then(faces => {
                 expect(faces).not.toBeNull();
                 expect(faces.length).toBe(6);
                 expect(faces[0].faceAttributes.gender).toBe("male");
-                let faceIds =  faces.map(face => face.faceId);
+                let faceIds = faces.map(face => face.faceId);
                 return impl.identify(personGroupId, faceIds).then(ids => {
                     expect(ids).not.toBeNull();
                     expect(ids.length).toBe(faces.length);
@@ -57,16 +58,13 @@ describe('check face-api-impl', () => {
     });
 
     it('should get person', () => {
-        let impl = new FaceAPIImpl({
-            location: location,
-            subscriptionKey: subscriptionKey
-        });
+        let impl: FaceAPI = getInstance();
         return readAsPromise(identifyImg).then(buf => {
             return impl.detect(buf).then(faces => {
                 expect(faces).not.toBeNull();
                 expect(faces.length).toBe(6);
                 expect(faces[0].faceAttributes.gender).toBe("male");
-                let faceIds =  faces.map(face => face.faceId);
+                let faceIds = faces.map(face => face.faceId);
                 return impl.identify(personGroupId, faceIds).then(ids => {
                     expect(ids).not.toBeNull();
                     expect(ids.length).toBe(faces.length);

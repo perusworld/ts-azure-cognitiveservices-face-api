@@ -100,20 +100,20 @@ export interface FaceRectangle {
 }
 
 export interface Identity {
-    faceId?:     string;
+    faceId?: string;
     candidates?: Candidate[];
 }
 
 export interface Candidate {
-    personId?:   string;
+    personId?: string;
     confidence?: number;
 }
 
 export interface Person {
-    personId?:         string;
+    personId?: string;
     persistedFaceIds?: string[];
-    name?:             string;
-    userData?:         string;
+    name?: string;
+    userData?: string;
 }
 
 export namespace Convert {
@@ -160,4 +160,6 @@ export namespace Convert {
 
 export interface FaceAPI {
     detect(buffer: Buffer): Promise<Face[]>;
+    identify(personGroupId: string, faceIds: string[]): Promise<Identity[]>;
+    person(personGroupId: string, personId: string): Promise<Person>;
 }
