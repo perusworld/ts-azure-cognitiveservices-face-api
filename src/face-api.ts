@@ -1,5 +1,5 @@
 export interface Face {
-    faceId?: string;
+    faceId: string;
     faceRectangle?: FaceRectangle;
     faceLandmarks?: { [key: string]: FaceLandmark };
     faceAttributes?: FaceAttributes;
@@ -100,20 +100,26 @@ export interface FaceRectangle {
 }
 
 export interface Identity {
-    faceId?: string;
+    faceId: string;
     candidates?: Candidate[];
 }
 
 export interface Candidate {
-    personId?: string;
+    personId: string;
     confidence?: number;
 }
 
 export interface Person {
-    personId?: string;
+    personId: string;
     persistedFaceIds?: string[];
     name?: string;
     userData?: string;
+}
+
+export interface DetectedPerson {
+    personId: string;
+    name?: string;
+    emotion: string;
 }
 
 export namespace Convert {
@@ -141,7 +147,7 @@ export namespace Convert {
         return JSON.stringify(value, null, 2);
     }
 
-    export function emotion(face: Face): string {
+    export function emotion(face?: Face): string {
         let ret: string = "unknown";
         var sortable = [];
         if (face && face.faceAttributes && face.faceAttributes.emotion) {
@@ -162,4 +168,5 @@ export interface FaceAPI {
     detect(buffer: Buffer): Promise<Face[]>;
     identify(personGroupId: string, faceIds: string[]): Promise<Identity[]>;
     person(personGroupId: string, personId: string): Promise<Person>;
+    detectPersons(buffer: Buffer,personGroupId: string): Promise<DetectedPerson[]>;
 }

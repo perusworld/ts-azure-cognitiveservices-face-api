@@ -1,4 +1,4 @@
-import { FaceAPI, Face, Identity, Person, Convert } from './face-api';
+import { FaceAPI, Face, Identity, Person, DetectedPerson, Convert } from './face-api';
 import { RequestWrapper } from './request';
 
 export class FaceAPIImpl implements FaceAPI {
@@ -52,4 +52,35 @@ export class FaceAPIImpl implements FaceAPI {
             return resp;
         });
     }
+
+    public detectPersons(buffer: Buffer, personGroupId: string): Promise<DetectedPerson[]> {
+        return this.detect(buffer).then(faces => {
+            if (null == faces || 0 == faces.length) {
+                return [];
+            } else {
+                let faceIds = faces.map(face => face.faceId);
+                return this.identify(personGroupId, faceIds).then(ids => {
+                    let ret: DetectedPerson[] = [];
+                    let id = ids.find(id => null != id.candidates && 0 < id.candidates.length);
+                    let promises: any[] = [];
+                    ids.forEach(id => {
+                        if (null != id.candidates && 0 < id.candidates.length) {
+                            ret.push({ personId: id.candidates[0].personId, emotion: Convert.emotion(faces.find(face => face.faceId == id.faceId)) })
+                            promises.push(this.person(personGroupId, id.candidates[0].personId));
+                        }
+                    });
+                    return Promise.all(promises).then(values => {
+                        values.forEach(person => {
+                            let entry = ret.find(entry => entry.personId == person.personId);
+                            if (entry) {
+                                entry.name = person.name;
+                            }
+                        });
+                        return ret;
+                    });
+                });
+            }
+        })
+    }
+
 }
