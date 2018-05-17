@@ -78,4 +78,15 @@ describe('check face-api-impl', () => {
         });
     });
 
+    it('should detect persons', () => {
+        let impl: FaceAPI = getInstance();
+        return readAsPromise(identifyImg).then(buf => {
+            return impl.detectPersons(buf, personGroupId).then(persons => {
+                expect(persons).not.toBeNull();
+                expect(persons.length).toBe(5);
+                console.log(persons);
+            })
+        });
+    });
+
 });
