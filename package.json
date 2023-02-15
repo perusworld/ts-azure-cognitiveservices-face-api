@@ -49,6 +49,6 @@
     "typescript": "^2.8.3"
   },
   "dependencies": {
-    "request": "^2.86.0"
+    "request": "^2.88.2"
   }
 }
